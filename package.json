@@ -11,7 +11,7 @@
     "prettier:comment": "自动格式化当前目录下的所有文件",
     "prettier": "prettier --write",
     "eslint:comment": "使用 ESLint 检查并自动修复 src 目录下所有扩展名为 .js 和 .tsx 的文件",
-    "eslint": "eslint --ext .js,.tsx --ignore-path .gitignore --fix src"
+    "eslint": "eslint --ext .ts,.tsx --ignore-path .gitignore --fix src"
   },
   "config": {
     "commitizen": {
@@ -20,8 +20,8 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "npm run eslint",
-      "npm run prettier"
+      "yarn eslint",
+      "yarn prettier"
     ]
   },
   "dependencies": {
@@ -29,15 +29,19 @@
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.15",
     "@types/node": "^18.11.9",
-    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
     "axios": "^1.2.0",
     "babel-eslint": "^10.1.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "less": "^4.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.3"
+    "react-router-dom": "^6.4.3",
+    "typescript": "*",
+    "vite": "^3.2.3",
+    "@vitejs/plugin-react": "^2.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
@@ -45,15 +49,18 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@typescript-eslint/parser": "^5.44.0",
-    "@vitejs/plugin-react": "^2.2.0",
     "commitizen": "^4.2.5",
     "commitlint-config-cz": "^0.13.3",
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^7.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
-    "prettier": "^2.8.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.2.3"
+    "prettier": "^2.8.0"
   }
 }
