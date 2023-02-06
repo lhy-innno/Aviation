@@ -1,0 +1,107 @@
+.home-main {
+  //width: 100vw;
+  height: 100%;
+  .container {
+    position: relative;
+    background: #000;
+    margin: 0 auto;
+    //width: 90vw;
+    z-index: 1;
+    .poster {
+      width: 100%;
+      height: 100%;
+      opacity: .7;
+      filter: alpha(opacity=70);
+    }
+    .cover {
+      width: 100%;
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      text-align: center;
+    }
+  }
+  .site-layout {
+    .tab-card {
+      flex-wrap: wrap;
+      margin: 0 0 50px 0;
+      align-content: center;
+      position: relative;
+      transform: translateY(-50px);
+      z-index: 3;
+      .ant-tabs-nav-list {
+        display: flex;
+        .ant-tabs-tab {
+          width: 200px;
+          display:inline-block;
+          text-align: center;
+          background: #f5f5f5;
+        }
+        .ant-tabs-tab-active {
+          background: #fff;
+        }
+      }
+    }
+    .recommend-card-group {
+      .recommend-card {
+        width: 400px;
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.ant-tabs-content-holder {
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 19%);
+}
+.card-container p {
+  margin: 0;
+}
+.card-container > .ant-tabs-card .ant-tabs-content {
+  height: 120px;
+  margin-top: -16px;
+}
+.card-container > .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+  padding: 16px;
+  background: #fff;
+  min-width: 800px;
+}
+.card-container > .ant-tabs-card > .ant-tabs-nav::before {
+  display: none;
+}
+.card-container > .ant-tabs-card .ant-tabs-tab,
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-tab {
+  background: transparent;
+  border-color: transparent;
+}
+.card-container > .ant-tabs-card .ant-tabs-tab-active,
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-tab-active {
+  background: #fff;
+  border-color: #fff;
+}
+#components-tabs-demo-card-top .code-box-demo {
+  padding: 24px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+[data-theme='compact'] .card-container > .ant-tabs-card .ant-tabs-content {
+  height: 120px;
+  margin-top: -8px;
+}
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-tab {
+  background: transparent;
+  border-color: transparent;
+}
+[data-theme='dark'] #components-tabs-demo-card-top .code-box-demo {
+  background: #000;
+}
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+  background: #141414;
+}
+[data-theme='dark'] .card-container > .ant-tabs-card .ant-tabs-tab-active {
+  background: #141414;
+  border-color: #141414;
+}
+
+
