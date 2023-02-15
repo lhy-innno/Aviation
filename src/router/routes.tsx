@@ -5,6 +5,7 @@ import Home from '@/views/home'
 import { Navigate } from 'react-router-dom'
 import Login from '@/views/login'
 import Signup from '@/views/signup'
+import Search from '@/views/search'
 
 export function MainRoutes() {
 	return useRoutes([
@@ -27,6 +28,10 @@ export function MainRoutes() {
 				{
 					path: '/signup',
 					element: <Signup />
+				},
+				{
+					path: '/search',
+					element: <Search />
 				}
 			]
 		}

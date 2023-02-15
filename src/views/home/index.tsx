@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	Layout,
 	Card,
@@ -11,9 +11,12 @@ import {
 	Col,
 	Row,
 	Divider,
-	Tabs
+	Tabs,
+	Select
 } from 'antd'
+import type { DatePickerProps } from 'antd'
 import './style.less'
+import api from '@/api'
 const { Meta } = Card
 import { FaPlane, FaTag, FaBusinessTime, FaPlaneDeparture } from 'react-icons/fa'
 import MainPoster from '@/assets/image/main.webp'
@@ -33,6 +36,48 @@ const Home: React.FC = () => {
 					wrapperCol: { span: 10, offset: 10 }
 			  }
 			: null
+	let [cityOptions, setCityOptions] = useState<object[]>([])
+	let options: object[] = []
+	useEffect(() => {
+		api.airport
+			.getAirport()
+			.then((res) => {
+				for (let i = 0; i < res.list.length; i++) {
+					options.push({
+						value: res.list[i].airport_id,
+						label: res.list[i].airport_name
+					})
+				}
+			})
+			.then(() => {
+				return setCityOptions(options)
+			})
+	}, [])
+	let departureId = ''
+	let destinationId = ''
+	let flightTime = ''
+	function departureChange(value: string) {
+		departureId = value
+		console.log(departureId)
+	}
+	function destinationChange(value: string) {
+		destinationId = value
+	}
+	const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+		flightTime = dateString
+		console.log(date, dateString)
+	}
+	function searchFlight() {
+		api.airport
+			.searchAirport({
+				departure: departureId,
+				destination: destinationId,
+				date: flightTime
+			})
+			.then((res) => {
+				console.log(res)
+			})
+	}
 	return (
 		<section className="home-main">
 			<Layout style={{ width: '100%' }}>
@@ -60,16 +105,34 @@ const Home: React.FC = () => {
 											initialValues={{ layout: formLayout }}
 										>
 											<Form.Item>
-												<Input placeholder="始发城市" />
+												<Select
+													size="large"
+													showSearch
+													onSelect={departureChange}
+													style={{ width: 200 }}
+													placeholder="出发城市"
+													optionFilterProp="children"
+													options={cityOptions}
+												/>
 											</Form.Item>
 											<Form.Item>
-												<Input placeholder="抵达城市" />
+												<Select
+													size="large"
+													showSearch
+													onSelect={destinationChange}
+													style={{ width: 200 }}
+													placeholder="抵达城市"
+													optionFilterProp="children"
+													options={cityOptions}
+												/>
 											</Form.Item>
 											<Form.Item name="date-picker">
-												<DatePicker placeholder="选择日期" />
+												<DatePicker placeholder="选择日期" onChange={onChange} />
 											</Form.Item>
 											<Form.Item {...buttonItemLayout}>
-												<Button type="primary">Submit</Button>
+												<Button type="primary" onClick={searchFlight}>
+													Submit
+												</Button>
 											</Form.Item>
 										</Form>
 									)
