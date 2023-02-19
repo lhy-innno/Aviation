@@ -3,12 +3,15 @@ import type { ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 import { Button, DatePicker, Select, Table, Space, Tag, DatePickerProps } from 'antd'
 import { SearchParams } from './index.d'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './style.less'
 import type { ColumnsType } from 'antd/es/table'
 import api from '@/api'
+import { SET_DESTINATION_AIRPORT, SET_DEPARTURE_AIRPORT } from '@/store/flightSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks'
 
 const Index: React.FC = () => {
+	const dispatch = useAppDispatch()
 	const [data, setData] = useState<SearchParams.FlightType[]>([])
 	const columns: ColumnsType<SearchParams.FlightType> = [
 		{
@@ -106,42 +109,34 @@ const Index: React.FC = () => {
 			)
 		}
 	]
-	const [cityOptions, setCityOptions] = useState<SearchParams.CityOptionType[]>([])
-	const [aircraftOption, setAircraftOption] = useState<SearchParams.AircraftOptionType[]>([])
-	let options: SearchParams.CityOptionType[] = []
-	useEffect(() => {
-		api.airport
-			.getAirport()
-			.then((res) => {
-				for (let i = 0; i < res.list.length; i++) {
-					options.push({
-						value: res.list[i].airport_id,
-						label: res.list[i].airport_name
-					})
-				}
-			})
-			.then(() => {
-				setCityOptions(options)
-			})
-		api.aircraft.getAircraft().then((res) => {
-			setAircraftOption(res.list)
-		})
-	}, [])
-	let departureId = ''
-	let destinationId = ''
+	const [cityOptions] = useState<SearchParams.CityOptionType[]>(
+		useAppSelector((state) => state.flight.airportInfo)
+	)
+	const [aircraftOption] = useState<SearchParams.AircraftOptionType[]>(
+		useAppSelector((state) => state.flight.aircraftInfo)
+	)
+	let [departureId, setDepartureId] = useState(
+		useAppSelector((state) => state.flight.departure_airport)
+	)
+	let [destinationId, setDestinationId] = useState(
+		useAppSelector((state) => state.flight.destination_airport)
+	)
 	let flightTime = ''
 	function departureChange(value: string) {
-		departureId = value
-		console.log(departureId)
+		setDepartureId(value)
+		dispatch(SET_DEPARTURE_AIRPORT(value))
 	}
 	function departureClear() {
-		departureId = ''
+		setDepartureId('')
+		dispatch(SET_DEPARTURE_AIRPORT(''))
 	}
 	function destinationChange(value: string) {
-		destinationId = value
+		setDestinationId(value)
+		dispatch(SET_DESTINATION_AIRPORT(value))
 	}
 	function destinationClear() {
-		destinationId = ''
+		setDestinationId('')
+		dispatch(SET_DESTINATION_AIRPORT(''))
 	}
 	const onChange: DatePickerProps['onChange'] = (date, dateString) => {
 		flightTime = dateString
@@ -179,6 +174,7 @@ const Index: React.FC = () => {
 		<div style={{ width: '90%', margin: 'auto' }}>
 			<div className={'flightSelector'}>
 				<Select
+					value={departureId === '' ? undefined : departureId}
 					allowClear
 					style={{ width: 200 }}
 					size={'large'}
@@ -193,6 +189,7 @@ const Index: React.FC = () => {
 					}
 				/>
 				<Select
+					value={destinationId === '' ? undefined : destinationId}
 					allowClear
 					style={{ width: 200 }}
 					size={'large'}

@@ -21,6 +21,8 @@ import './style.less'
 import { useNavigate } from 'react-router-dom'
 import api from '@/api'
 type LoginType = 'phone' | 'account'
+import { useAppDispatch, useAppSelector } from '@/hooks'
+import { SET_TOKEN } from '@/store/userSlice'
 
 const iconStyles: CSSProperties = {
 	marginInlineStart: '16px',
@@ -31,6 +33,7 @@ const iconStyles: CSSProperties = {
 }
 
 const Index: React.FC = () => {
+	const dispatch = useAppDispatch()
 	const [loginType, setLoginType] = useState<LoginType>('phone')
 	const formRef = useRef<ProFormInstance>()
 	const navigate = useNavigate()
@@ -39,12 +42,16 @@ const Index: React.FC = () => {
 			?.validateFields(['name', 'username', 'password', 'email', 'nationality', 'gender', 'phone'])
 			.then(() => {
 				try {
-					api.user.login({
-						username: formRef?.current?.getFieldValue('username'),
-						password: formRef?.current?.getFieldValue('password')
-					})
-					message.success('登录成功')
-					navigate('/home')
+					api.user
+						.login({
+							username: formRef?.current?.getFieldValue('username'),
+							password: formRef?.current?.getFieldValue('password')
+						})
+						.then((res) => {
+							dispatch(SET_TOKEN(res.token))
+							message.success('登录成功')
+							navigate('/home')
+						})
 				} catch (e) {
 					console.log(e)
 				}

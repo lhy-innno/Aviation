@@ -1,14 +1,29 @@
 import { createStore, compose, applyMiddleware } from 'redux'
+import storage from 'redux-persist/lib/storage'
+import { persistReducer, persistStore } from 'redux-persist'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import flightReducer from './flightSlice'
+import userReducer from './userSlice'
 import thunk from 'redux-thunk'
-import reducer from './reducer'
-type windowWithReduxExtension = Window & {
-	__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: Function
+
+const persistConfig = {
+	key: 'root',
+	storage,
+	blacklist: []
 }
-const composeEnhancers =
-	(window as windowWithReduxExtension).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const store = configureStore(reducer)
+const rootReducer = combineReducers({
+	flight: flightReducer,
+	user: userReducer
+})
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+export const store = configureStore({
+	reducer: persistedReducer,
+	middleware: [thunk]
+})
 // const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)))
-
-export default store
+export const persistor = persistStore(store)
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch

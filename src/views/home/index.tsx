@@ -22,8 +22,18 @@ import { FaPlane, FaTag, FaBusinessTime, FaPlaneDeparture } from 'react-icons/fa
 import MainPoster from '@/assets/image/main.webp'
 const { Content } = Layout
 type LayoutType = Parameters<typeof Form>[0]['layout']
+import {
+	SET_AIRPORT_INFO,
+	SET_DESTINATION_AIRPORT,
+	SET_DEPARTURE_AIRPORT,
+	SET_AIRCRAFT_INFO
+} from '@/store/flightSlice'
+import { useAppDispatch, useAppSelector } from '@/hooks'
+import { useNavigate } from 'react-router-dom'
 const Home: React.FC = () => {
+	const navigate = useNavigate()
 	const [formLayout] = useState<LayoutType>('inline')
+	const dispatch = useAppDispatch()
 	const formItemLayout =
 		formLayout === 'inline'
 			? {
@@ -38,6 +48,13 @@ const Home: React.FC = () => {
 			: null
 	let [cityOptions, setCityOptions] = useState<object[]>([])
 	let options: object[] = []
+	let [departureId, setDepartureId] = useState(
+		useAppSelector((state) => state.flight.departure_airport)
+	)
+	let [destinationId, setDestinationId] = useState(
+		useAppSelector((state) => state.flight.destination_airport)
+	)
+	let flightTime = ''
 	useEffect(() => {
 		api.airport
 			.getAirport()
@@ -50,18 +67,28 @@ const Home: React.FC = () => {
 				}
 			})
 			.then(() => {
-				return setCityOptions(options)
+				setCityOptions(options)
+				dispatch(SET_AIRPORT_INFO(options))
 			})
+		api.aircraft.getAircraft().then((res) => {
+			dispatch(SET_AIRCRAFT_INFO(res.list))
+		})
 	}, [])
-	let departureId = ''
-	let destinationId = ''
-	let flightTime = ''
 	function departureChange(value: string) {
-		departureId = value
-		console.log(departureId)
+		setDepartureId(value)
+		dispatch(SET_DEPARTURE_AIRPORT(value))
 	}
 	function destinationChange(value: string) {
-		destinationId = value
+		setDestinationId(value)
+		dispatch(SET_DESTINATION_AIRPORT(value))
+	}
+	function destinationClear() {
+		setDestinationId('')
+		dispatch(SET_DESTINATION_AIRPORT(''))
+	}
+	function departureClear() {
+		setDepartureId('')
+		dispatch(SET_DEPARTURE_AIRPORT(''))
 	}
 	const onChange: DatePickerProps['onChange'] = (date, dateString) => {
 		flightTime = dateString
@@ -76,6 +103,7 @@ const Home: React.FC = () => {
 			})
 			.then((res) => {
 				console.log(res)
+				navigate('/search')
 			})
 	}
 	return (
@@ -106,8 +134,11 @@ const Home: React.FC = () => {
 										>
 											<Form.Item>
 												<Select
+													value={departureId === '' ? undefined : departureId}
+													onClear={departureClear}
 													size="large"
 													showSearch
+													allowClear
 													onSelect={departureChange}
 													style={{ width: 200 }}
 													placeholder="出发城市"
@@ -117,8 +148,11 @@ const Home: React.FC = () => {
 											</Form.Item>
 											<Form.Item>
 												<Select
+													value={destinationId === '' ? undefined : destinationId}
+													onClear={destinationClear}
 													size="large"
 													showSearch
+													allowClear
 													onSelect={destinationChange}
 													style={{ width: 200 }}
 													placeholder="抵达城市"
